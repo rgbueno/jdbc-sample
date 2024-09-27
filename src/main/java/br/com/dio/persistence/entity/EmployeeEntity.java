@@ -3,6 +3,8 @@ package br.com.dio.persistence.entity;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
 @Data
