@@ -1,11 +1,15 @@
 package br.com.dio.persistence.entity;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import com.mysql.cj.jdbc.StatementImpl;
 
 import org.springframework.stereotype.Component;
+
+import com.mysql.cj.jdbc.StatementImpl;
 
 import br.com.dio.persistence.ConnectionUtil;
 
@@ -41,14 +45,57 @@ public class EmployeeDAO {
 	}
 	
 	public List<EmployeeEntity> findAll(){
-		return null;
+		List<EmployeeEntity> entities = new ArrayList<>();
+		try	(
+			var connection = ConnectionUtil.getConnetction();
+			var statement = connection.createStatement();
+				){
+			String sql = "SELECT * FROM employees";
+			statement.executeQuery(sql);
+			var resultSet = statement.getResultSet();
+			
+			while(resultSet.next()) {
+				var entity = new EmployeeEntity();
+				entity.setId(resultSet.getLong("id"));
+				entity.setName(resultSet.getString("name"));
+				entity.setSalary(resultSet.getBigDecimal("salary"));
+				var birthDayInstant = resultSet.getTimestamp("birthday").toInstant();
+				entity.setBirthday(OffsetDateTime.ofInstant(birthDayInstant, ZoneOffset.UTC));
+				entities.add(entity);
+			}
+				
+		}catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return entities;
 	}
 	
 	public EmployeeEntity findById(final long id) {
-		return null;
+		var entity = new EmployeeEntity();
+		try	(
+				var connection = ConnectionUtil.getConnetction();
+				var statement = connection.createStatement();
+					){
+				String sql = "SELECT * FROM employees WHERE id = "+id;
+				statement.executeQuery(sql);
+				var resultSet = statement.getResultSet();
+				
+				if(resultSet.next()) {
+					entity.setId(resultSet.getLong("id"));
+					entity.setName(resultSet.getString("name"));
+					entity.setSalary(resultSet.getBigDecimal("salary"));
+					var birthDayInstant = resultSet.getTimestamp("birthday").toInstant();
+					entity.setBirthday(OffsetDateTime.ofInstant(birthDayInstant, ZoneOffset.UTC));
+				}
+					
+			}catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		return entity;
 	}
 	
 	private String formatOffsetDateTime(final OffsetDateTime dateTime) {
-		return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		var utcDateTime = dateTime.withOffsetSameInstant(ZoneOffset.UTC);
+		return utcDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
 }

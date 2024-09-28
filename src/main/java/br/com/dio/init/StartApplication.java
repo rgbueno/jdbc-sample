@@ -1,15 +1,11 @@
 package br.com.dio.init;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import br.com.dio.persistence.entity.EmployeeDAO;
-import br.com.dio.persistence.entity.EmployeeEntity;
 
 @Component
 public class StartApplication implements CommandLineRunner {
@@ -18,11 +14,13 @@ public class StartApplication implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        var flyway = Flyway.configure()
+    	
+    	var flyway = Flyway.configure()
         		.dataSource("jdbc:mysql://localhost:3308/jdbc-sample", "root", "root")
         		.load();
         flyway.migrate();
         
+        /*
         var employee = new EmployeeEntity();
         employee.setName("Augusto");
         employee.setSalary(new BigDecimal("10000"));
@@ -30,6 +28,10 @@ public class StartApplication implements CommandLineRunner {
         
         System.out.println(employee);
         employeeDAO.insert(employee);
-        System.out.println(employee);
+        System.out.println(employee);*/
+        
+        //employeeDAO.findAll().forEach(System.out::println);
+        
+        System.out.println(employeeDAO.findById(1));
     }
 }
