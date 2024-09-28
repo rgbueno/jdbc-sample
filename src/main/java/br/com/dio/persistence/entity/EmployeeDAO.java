@@ -37,11 +37,32 @@ public class EmployeeDAO {
 	}
 	
 	public void update(final EmployeeEntity entity) {
-		
+		try	(
+			var connection = ConnectionUtil.getConnetction();
+			var statement = connection.createStatement()
+				){
+			String sql = "UPDATE employees SET " + 
+			"name = '" + entity.getName() + "'," + 
+			"salary = "+ entity.getSalary().toString() + "," + 
+			"birthday = '" + formatOffsetDateTime(entity.getBirthday()) + "'" +
+			"WHERE id = " + entity.getId();
+				
+			statement.executeUpdate(sql);
+		}catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	public void delete(final long id) {
-		
+		try	(
+			var connection = ConnectionUtil.getConnetction();
+			var statement = connection.createStatement()
+				){
+			String sql = "DELETE FROM employees WHERE id =" + id;
+			statement.executeUpdate(sql);
+		}catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	public List<EmployeeEntity> findAll(){
