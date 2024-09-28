@@ -24,31 +24,30 @@ public class StartApplication implements CommandLineRunner {
         		.load();
         flyway.migrate();
         
-        /*
-        var employee = new EmployeeEntity();
+        EmployeeEntity employee = new EmployeeEntity();
+        
         employee.setName("Augusto");
         employee.setSalary(new BigDecimal("10000"));
         employee.setBirthday(OffsetDateTime.now().minusYears(8));
         
         System.out.println(employee);
         employeeDAO.insert(employee);
-        System.out.println(employee);*/
+        System.out.println(employee);
         
         //employeeDAO.findAll().forEach(System.out::println);
         
         //System.out.println(employeeDAO.findById(1));
         
-        /*
-        var employee = new EmployeeEntity();
-        employee.setId(3);
+        var id = employee.getId();
+        employee = new EmployeeEntity();
+        employee.setId(id);
         employee.setName("Augusto Cravo");
         employee.setSalary(new BigDecimal("15000"));
         employee.setBirthday(OffsetDateTime.now().minusYears(9));
 
         employeeDAO.update(employee);
-        */
         
-        employeeDAO.delete(3);
+        employeeDAO.delete(id);
         
     }
 }
