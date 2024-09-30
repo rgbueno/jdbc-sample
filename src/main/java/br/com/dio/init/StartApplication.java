@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import br.com.dio.persistence.entity.EmployeeAuditDAO;
 import br.com.dio.persistence.entity.EmployeeDAO;
 import br.com.dio.persistence.entity.EmployeeEntity;
 
@@ -15,6 +16,9 @@ import br.com.dio.persistence.entity.EmployeeEntity;
 public class StartApplication implements CommandLineRunner {
     @Autowired
     private EmployeeDAO employeeDAO;
+    @Autowired
+    private EmployeeAuditDAO employeeAuditDAO;
+    
     
     @Override
     public void run(String... args) throws Exception {
@@ -24,6 +28,8 @@ public class StartApplication implements CommandLineRunner {
         		.load();
         flyway.migrate();
         
+        
+        /*
         EmployeeEntity employee = new EmployeeEntity();
         
         employee.setName("Augusto");
@@ -47,7 +53,9 @@ public class StartApplication implements CommandLineRunner {
 
         employeeDAO.update(employee);
         
-        employeeDAO.delete(id);
+        employeeDAO.delete(id);*/
+        
+        employeeAuditDAO.findAll().forEach(System.out::println);
         
     }
 }
