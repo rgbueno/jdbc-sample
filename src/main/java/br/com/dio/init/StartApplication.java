@@ -11,11 +11,14 @@ import org.springframework.stereotype.Component;
 import br.com.dio.persistence.entity.EmployeeAuditDAO;
 import br.com.dio.persistence.entity.EmployeeDAO;
 import br.com.dio.persistence.entity.EmployeeEntity;
+import br.com.dio.persistence.entity.EmployeeParamDAO;
 
 @Component
 public class StartApplication implements CommandLineRunner {
     @Autowired
     private EmployeeDAO employeeDAO;
+    @Autowired
+    private EmployeeParamDAO employeeParamDAO;
     @Autowired
     private EmployeeAuditDAO employeeAuditDAO;
     
@@ -55,7 +58,43 @@ public class StartApplication implements CommandLineRunner {
         
         employeeDAO.delete(id);*/
         
-        employeeAuditDAO.findAll().forEach(System.out::println);
+        /*
+        EmployeeEntity employee = new EmployeeEntity();
+        
+        employee.setName("Augusto");
+        employee.setSalary(new BigDecimal("10000"));
+        employee.setBirthday(OffsetDateTime.now().minusYears(8));
+        
+        employeeParamDAO.insert(employee);
+        System.out.println(employee);
+        
+        employeeParamDAO.findAll().forEach(System.out::println);
+        
+        var id = employee.getId();
+        
+        System.out.println(employeeParamDAO.findById(id));
+        
+        employee = new EmployeeEntity();
+        employee.setId(id);
+        employee.setName("Augusto Cravo");
+        employee.setSalary(new BigDecimal("15000"));
+        employee.setBirthday(OffsetDateTime.now().minusYears(9));
+
+        employeeParamDAO.update(employee);
+        System.out.println(employee);
+        
+        employeeParamDAO.delete(id);*/
+        
+        
+        EmployeeEntity employee = new EmployeeEntity();
+        
+        employee.setName("Guto");
+        employee.setSalary(new BigDecimal("15000"));
+        employee.setBirthday(OffsetDateTime.now().minusYears(15));
+        
+        employeeParamDAO.insertWithProcedure(employee);*/
+        
+        //employeeAuditDAO.findAll().forEach(System.out::println);
         
     }
 }
