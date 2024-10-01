@@ -1,5 +1,6 @@
 package br.com.dio.persistence.entity;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -29,6 +30,34 @@ public class EmployeeParamDAO {
 			statement.executeUpdate();
 			if(statement instanceof StatementImpl impl)
 				entity.setId(impl.getLastInsertID());
+				
+		}catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+	}
+	
+	public void insertBatch(final List<EmployeeEntity> entities) {
+		try	(var connection = ConnectionUtil.getConnetction()){
+			
+			try(var statement = connection.prepareStatement("INSERT INTO employees (name, salary, birthday) values (?, ?, ?)")){
+				connection.setAutoCommit(false);
+				for(var entity: entities) {
+					statement.setString(1, entity.getName());
+					statement.setBigDecimal(2, entity.getSalary());
+					//var timestamp = Timestamp.valueOf(entity.getBirthday().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
+					//statement.setTimestamp(3, Timestamp.valueOf(entity.getBirthday().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
+					//statement.setTimestamp(3, Timestamp.valueOf(OffsetDateTime.now( ZoneOffset.UTC).toLocalDateTime()));
+					statement.setTimestamp(3, Timestamp.valueOf(entity.getBirthday().toLocalDateTime()));
+					
+					statement.addBatch();
+				}
+				statement.executeBatch();
+				connection.commit();
+			}catch (SQLException ex) {
+				connection.rollback();
+				ex.printStackTrace();
+			}
 				
 		}catch (Exception ex) {
 			ex.printStackTrace();

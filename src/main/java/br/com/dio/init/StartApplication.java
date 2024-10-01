@@ -1,7 +1,15 @@
 package br.com.dio.init;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +20,7 @@ import br.com.dio.persistence.entity.EmployeeAuditDAO;
 import br.com.dio.persistence.entity.EmployeeDAO;
 import br.com.dio.persistence.entity.EmployeeEntity;
 import br.com.dio.persistence.entity.EmployeeParamDAO;
+import net.datafaker.Faker;
 
 @Component
 public class StartApplication implements CommandLineRunner {
@@ -22,8 +31,12 @@ public class StartApplication implements CommandLineRunner {
     @Autowired
     private EmployeeAuditDAO employeeAuditDAO;
     
+    private Faker faker = new Faker(Locale.of("pt", "BR"));
     
-    @Override
+    
+    
+    @SuppressWarnings("deprecation")
+	@Override
     public void run(String... args) throws Exception {
     	
     	var flyway = Flyway.configure()
@@ -85,7 +98,7 @@ public class StartApplication implements CommandLineRunner {
         
         employeeParamDAO.delete(id);*/
         
-        
+        /*
         EmployeeEntity employee = new EmployeeEntity();
         
         employee.setName("Guto");
@@ -95,6 +108,20 @@ public class StartApplication implements CommandLineRunner {
         employeeParamDAO.insertWithProcedure(employee);*/
         
         //employeeAuditDAO.findAll().forEach(System.out::println);
+        
+        var entities = Stream.generate(() -> {
+        	var employee = new EmployeeEntity();
+        	employee.setName(faker.name().fullName());
+        	employee.setSalary(new BigDecimal(faker.number().digits(4)));
+        	//employee.setBirthday(OffsetDateTime.of(null, null, null) of(faker.timeAndDate().birthday().atTime(LocalTime.MIN), ZoneOffset.UTC));
+        	//employee.setBirthday(OffsetDateTime.of(LocalDate.now().minusYears(faker.number().numberBetween(60, 20)), LocalTime.MIN, ZoneOffset.UTC));
+        	//employee.setBirthday(OffsetDateTime.now(ZoneOffset.UTC).minusYears(faker.number().numberBetween(18 , 70)).atZoneSimilarLocal(ZoneOffset.UTC).toOffsetDateTime());
+        	employee.setBirthday(OffsetDateTime.now(ZoneOffset.UTC));
+        	        	
+        	return employee;
+        }).limit(4000).toList();
+        
+        employeeParamDAO.insertBatch(entities);
         
     }
 }
